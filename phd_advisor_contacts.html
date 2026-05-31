@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhD Advisor Contacts</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f7f7f5;
+    --bg-tertiary: #f0ede8;
+    --text: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #999;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.22);
+    --accent: #7F77DD;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1e;
+      --bg-secondary: #2c2c2e;
+      --bg-tertiary: #3a3a3c;
+      --text: #f2f2f7;
+      --text-secondary: #ababab;
+      --text-tertiary: #6b6b6b;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.22);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-tertiary); color: var(--text); min-height: 100vh; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+  .header h1 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .header h1 i { font-size: 20px; color: var(--accent); }
+  .btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 8px 14px; border-radius: var(--radius); cursor: pointer; border: 0.5px solid var(--border-strong); background: var(--bg); color: var(--text); font-family: inherit; transition: background .15s; }
+  .btn:hover { background: var(--bg-secondary); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+  .btn-primary:hover { background: #6c64c8; border-color: #6c64c8; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .stat { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+  .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .stat-val { font-size: 22px; font-weight: 600; }
+  .tbl-wrap { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; min-width: 800px; }
+  thead th { background: var(--bg-secondary); color: var(--text-secondary); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 10px 10px; border-bottom: 0.5px solid var(--border); text-align: left; white-space: nowrap; position: sticky; top: 0; z-index: 1; cursor: pointer; user-select: none; }
+  thead th:hover { color: var(--text); }
+  thead th:first-child, thead th:last-child { cursor: default; }
+  tbody tr { border-bottom: 0.5px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg-secondary); }
+  tbody td { padding: 6px 8px; vertical-align: middle; }
+  td input[type=text] { width: 100%; background: transparent; border: none; font-size: 13px; color: var(--text); padding: 4px 6px; border-radius: 5px; outline: none; font-family: inherit; }
+  td input[type=text]:focus { background: var(--bg-secondary); box-shadow: 0 0 0 2px var(--accent); }
+  td select { width: 100%; background: transparent; border: none; font-size: 13px; color: var(--text); padding: 4px 6px; cursor: pointer; outline: none; border-radius: 5px; font-family: inherit; }
+  td select:focus { background: var(--bg-secondary); }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .mini-bar-wrap { display: flex; align-items: center; gap: 6px; }
+  .mini-bar { flex: 1; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+  .mini-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width .3s; }
+  .row-num { color: var(--text-tertiary); font-size: 11px; text-align: center; width: 32px; }
+  .del-btn { background: none; border: none; color: var(--text-tertiary); font-size: 15px; padding: 3px 7px; border-radius: 5px; cursor: pointer; line-height: 1; }
+  .del-btn:hover { color: #c53030; background: rgba(197,48,48,.1); }
+  .dots-btn { background: none; border: 0.5px solid var(--border); color: var(--text-secondary); font-size: 13px; padding: 3px 8px; border-radius: 5px; cursor: pointer; }
+  .dots-btn:hover { background: var(--bg-secondary); color: var(--text); }
+  .add-row { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text-secondary); background: none; border: none; padding: 10px 12px; cursor: pointer; font-family: inherit; }
+  .add-row:hover { color: var(--text); }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  .mfield { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .mfield label { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .05em; }
+  .mfield input, .mfield textarea, .mfield select { font-size: 13px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 8px 10px; background: var(--bg-secondary); color: var(--text); width: 100%; font-family: inherit; outline: none; }
+  .mfield input:focus, .mfield textarea:focus, .mfield select:focus { box-shadow: 0 0 0 2px var(--accent); }
+  .mfield textarea { min-height: 70px; resize: vertical; }
+  .checks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .check-item { display: flex; align-items: center; gap: 7px; font-size: 13px; cursor: pointer; padding: 4px 0; }
+  .check-item input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+  .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; }
+  .modal-actions-right { display: flex; gap: 8px; }
+
+  /* Empty state */
+  .empty-row td { text-align: center; padding: 3rem; color: var(--text-secondary); font-size: 13px; }
+  .empty-row i { font-size: 28px; display: block; margin-bottom: 8px; }
+
+  @media (max-width: 600px) {
+    .page { padding: 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .checks-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1><i class="ti ti-address-book"></i> PhD Advisor Contacts</h1>
+    <button class="btn btn-primary" onclick="addRow()"><i class="ti ti-plus"></i> Add contact</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px"></th>
+          <th style="width:130px" onclick="sortBy('name')">Name <span id="s-name"></span></th>
+          <th style="width:120px" onclick="sortBy('university')">University <span id="s-university"></span></th>
+          <th style="width:145px">Email</th>
+          <th style="width:110px">Research area</th>
+          <th style="width:125px" onclick="sortBy('status')">Status <span id="s-status"></span></th>
+          <th style="width:90px">Deadline</th>
+          <th style="width:105px">Progress</th>
+          <th style="width:60px" onclick="">Details</th>
+          <th style="width:32px"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <button class="add-row" onclick="addRow()"><i class="ti ti-plus"></i> Add row</button>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2><i class="ti ti-user" style="color:var(--accent)"></i> <span id="modal-title">Contact details</span></h2>
+    <div class="form-grid">
+      <div class="mfield"><label>Name</label><input id="d-name" type="text" placeholder="Dr. Jane Smith"></div>
+      <div class="mfield"><label>University</label><input id="d-uni" type="text" placeholder="MIT"></div>
+      <div class="mfield"><label>Email</label><input id="d-email" type="text" placeholder="j@mit.edu"></div>
+      <div class="mfield"><label>Phone</label><input id="d-phone" type="text" placeholder="optional"></div>
+      <div class="mfield"><label>Research area</label><input id="d-research" type="text" placeholder="e.g. NLP, robotics"></div>
+      <div class="mfield"><label>Deadline</label><input id="d-deadline" type="text" placeholder="Dec 1, 2025"></div>
+    </div>
+    <div class="mfield">
+      <label>Status</label>
+      <select id="d-status">
+        <option>Not contacted</option>
+        <option>Emailed</option>
+        <option>Reply received</option>
+        <option>Meeting scheduled</option>
+        <option>Met</option>
+        <option>Applied</option>
+        <option>Waiting</option>
+        <option>Declined</option>
+      </select>
+    </div>
+    <div class="mfield"><label>Research fit notes</label><textarea id="d-fit" placeholder="How does their work relate to yours?"></textarea></div>
+    <div class="mfield"><label>Meeting notes</label><textarea id="d-notes" placeholder="Notes from your call or visit…"></textarea></div>
+    <div class="mfield">
+      <label>Checklist</label>
+      <div class="checks-grid" id="checks-grid"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" style="color:#c53030;border-color:rgba(197,48,48,.3)" onclick="deleteFromModal()"><i class="ti ti-trash"></i> Delete</button>
+      <div class="modal-actions-right">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveModal()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CHECKS = [
+  'Send initial email', 'Research overlap noted', 'Follow up (if no reply)',
+  'Schedule meeting', 'Prepare questions', 'Meet / video call',
+  'Send thank-you', 'Request lab visit', 'Discuss funding', 'Confirm fit & apply'
+];
+const STATUS_COLORS = {
+  'Not contacted': {bg:'#F1EFE8', c:'#5F5E5A'},
+  'Emailed':       {bg:'#E6F1FB', c:'#185FA5'},
+  'Reply received':{bg:'#E1F5EE', c:'#0F6E56'},
+  'Meeting scheduled':{bg:'#FAEEDA', c:'#854F0B'},
+  'Met':           {bg:'#EEEDFE', c:'#534AB7'},
+  'Applied':       {bg:'#EAF3DE', c:'#3B6D11'},
+  'Waiting':       {bg:'#FAEEDA', c:'#854F0B'},
+  'Declined':      {bg:'#FCEBEB', c:'#A32D2D'}
+};
+const STATUS_OPTS = Object.keys(STATUS_COLORS);
+
+let rows = JSON.parse(localStorage.getItem('phd_advisor_v2') || '[]');
+let sortCol = null, sortDir = 1, editIdx = null;
+
+function save() { localStorage.setItem('phd_advisor_v2', JSON.stringify(rows)); }
+function mkRow() { return {name:'',university:'',email:'',phone:'',research:'',status:'Not contacted',deadline:'',fit:'',notes:'',checks:[]}; }
+function addRow() { rows.push(mkRow()); save(); render(); openModal(rows.length - 1); }
+function pct(r) { return r.checks ? Math.round(r.checks.filter(Boolean).length / CHECKS.length * 100) : 0; }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+function upd(i, k, v) { rows[i][k] = v; save(); renderStats(); renderRow(i); }
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+  rows.sort((a,b) => { let av=a[col]||'',bv=b[col]||''; return av<bv?-sortDir:av>bv?sortDir:0; });
+  save(); render();
+}
+
+function renderStats() {
+  const total = rows.length;
+  const emailed = rows.filter(r => !['Not contacted'].includes(r.status)).length;
+  const met = rows.filter(r => ['Met','Applied'].includes(r.status)).length;
+  const applied = rows.filter(r => r.status === 'Applied').length;
+  document.getElementById('stats').innerHTML = [
+    {label:'Total', val:total, color:'var(--accent)'},
+    {label:'Contacted', val:emailed, color:'#185FA5'},
+    {label:'Met / called', val:met, color:'#534AB7'},
+    {label:'Applied', val:applied, color:'#3B6D11'},
+  ].map(s=>`<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-val" style="color:${s.color}">${s.val}</div></div>`).join('');
+}
+
+function renderRow(i) {
+  const r = rows[i];
+  const tr = document.getElementById('tr-'+i);
+  if (!tr) return render();
+  const p = pct(r);
+  const sc = STATUS_COLORS[r.status] || STATUS_COLORS['Not contacted'];
+  tr.innerHTML = `
+    <td class="row-num">${i+1}</td>
+    <td><input type="text" value="${esc(r.name)}" placeholder="Name" onchange="upd(${i},'name',this.value)"></td>
+    <td><input type="text" value="${esc(r.university)}" placeholder="University" onchange="upd(${i},'university',this.value)"></td>
+    <td><input type="text" value="${esc(r.email)}" placeholder="email@uni.edu" onchange="upd(${i},'email',this.value)"></td>
+    <td><input type="text" value="${esc(r.research)}" placeholder="Research area" onchange="upd(${i},'research',this.value)"></td>
+    <td><select onchange="upd(${i},'status',this.value)">${STATUS_OPTS.map(s=>`<option${s===r.status?' selected':''}>${s}</option>`).join('')}</select></td>
+    <td><input type="text" value="${esc(r.deadline)}" placeholder="Dec 1" onchange="upd(${i},'deadline',this.value)"></td>
+    <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-fill" style="width:${p}%"></div></div><span style="font-size:11px;color:var(--text-secondary);min-width:30px">${p}%</span></div></td>
+    <td><button class="dots-btn" onclick="openModal(${i})"><i class="ti ti-dots" aria-hidden="true"></i></button></td>
+    <td><button class="del-btn" onclick="deleteRow(${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>`;
+}
+
+function render() {
+  ['name','university','status'].forEach(c => {
+    const el = document.getElementById('s-'+c);
+    if (el) el.textContent = sortCol===c ? (sortDir>0?' ↑':' ↓') : '';
+  });
+  const tbody = document.getElementById('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="10"><i class="ti ti-table-off"></i>No contacts yet — click "+ Add contact" to start</td></tr>';
+    renderStats(); return;
+  }
+  tbody.innerHTML = rows.map((_,i) => `<tr id="tr-${i}"></tr>`).join('');
+  rows.forEach((_,i) => renderRow(i));
+  renderStats();
+}
+
+function openModal(i) {
+  editIdx = i; const r = rows[i];
+  document.getElementById('modal-title').textContent = r.name || 'New contact';
+  document.getElementById('d-name').value = r.name||'';
+  document.getElementById('d-uni').value = r.university||'';
+  document.getElementById('d-email').value = r.email||'';
+  document.getElementById('d-phone').value = r.phone||'';
+  document.getElementById('d-research').value = r.research||'';
+  document.getElementById('d-deadline').value = r.deadline||'';
+  document.getElementById('d-status').value = r.status||'Not contacted';
+  document.getElementById('d-fit').value = r.fit||'';
+  document.getElementById('d-notes').value = r.notes||'';
+  const cg = document.getElementById('checks-grid');
+  cg.innerHTML = CHECKS.map((t,ci) =>
+    `<label class="check-item"><input type="checkbox" id="ck-${ci}" ${(r.checks||[])[ci]?'checked':''}><span>${t}</span></label>`
+  ).join('');
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('d-name').focus();
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); editIdx = null; }
+
+function saveModal() {
+  if (editIdx === null) return;
+  const r = rows[editIdx];
+  r.name = document.getElementById('d-name').value;
+  r.university = document.getElementById('d-uni').value;
+  r.email = document.getElementById('d-email').value;
+  r.phone = document.getElementById('d-phone').value;
+  r.research = document.getElementById('d-research').value;
+  r.deadline = document.getElementById('d-deadline').value;
+  r.status = document.getElementById('d-status').value;
+  r.fit = document.getElementById('d-fit').value;
+  r.notes = document.getElementById('d-notes').value;
+  r.checks = CHECKS.map((_,ci) => document.getElementById('ck-'+ci)?.checked || false);
+  save(); closeModal(); render();
+}
+
+function deleteRow(i) {
+  if (confirm('Delete this contact?')) { rows.splice(i,1); save(); render(); }
+}
+
+function deleteFromModal() {
+  if (editIdx === null) return;
+  if (confirm('Delete this contact?')) { rows.splice(editIdx,1); save(); closeModal(); render(); }
+}
+
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
